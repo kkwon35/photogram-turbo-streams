@@ -1,0 +1,30 @@
+var existingPhoto = $("#<%= dom_id(@like.photo) %>_likes");
+
+var updatedLikeVal = $("<%= j(render "photos/likes", photo: @like.photo) %>");
+
+existingPhoto.replaceWith(updatedLikeVal);
+
+<%= turbo_stream.replace "#{dom_id(@like.photo)}_new_like_form" do%>
+  <%= render @like%>
+<% end %>
+
+
+
+var added_comment = $("<%= j(render @comment) %>");
+
+added_comment.hide();
+
+$("#<%= dom_id(@comment.photo) %>_new_comment_form").before(added_comment);
+
+added_comment.slideDown();
+
+$("#<%= dom_id(@comment.photo) %>_new_comment_form #comment_body").val("");
+
+
+<%= turbo_stream.before "#{dom_id(@comment.photo)}_new_comment_form" do %>
+  <%= render @comment %>
+<% end %>
+
+<%= turbo_stream.replace "#{dom_id(@comment.photo)}_new_comment_form" do %>
+  <%= render "form", comment: @comment.photo.comments.build %>
+<% end %>
